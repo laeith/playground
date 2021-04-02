@@ -23,3 +23,12 @@ message StringMsg {
   string str5 = 5;
   repeated string strings = 6;
 }
+
+message DoublesMsg {
+  double double1 = 1;
+  double double2 = 2;
+  double double3 = 3;
+  double double4 = 4;
+  double double5 = 5;
+  repeated double doubles = 6;
+}

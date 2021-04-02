@@ -2,11 +2,10 @@ package com.laeith.playground.wire.json;
 
 import com.dslplatform.json.CompiledJson;
 
-import java.io.Serializable;
 import java.util.List;
 
 @CompiledJson
-public class PingPongJava implements Serializable {
+public class PingPongJava {
   public long id;
   public int version;
   public String message;
