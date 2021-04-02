@@ -56,13 +56,13 @@ public class DSLJSONBenchmark {
   
   private static PingPongJava generateMessage() {
     PingPongJava pingPong = new PingPongJava();
-    pingPong.setId(1);
-    pingPong.setVersion(2);
-    pingPong.setMessage("Random message - " + System.currentTimeMillis());
-    pingPong.setImportant(true);
-    pingPong.setNames(Data.NAMES);
-    pingPong.setInts(Data.INTS);
-    pingPong.setDoubles(Data.DOUBLES);
+    pingPong.id = 1;
+    pingPong.version = 2;
+    pingPong.message = "Random message - " + System.currentTimeMillis();
+    pingPong.isImportant = true;
+    pingPong.names = Data.NAMES;
+    pingPong.ints = Data.INTS;
+    pingPong.doubles = Data.DOUBLES;
     
     return pingPong;
   }
