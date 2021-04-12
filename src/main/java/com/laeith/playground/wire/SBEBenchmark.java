@@ -18,7 +18,6 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.Throughput)
@@ -47,29 +46,29 @@ public class SBEBenchmark {
     }
   }
   
-  //@Benchmark
-  //public int measureSerialization(final SBEState state) {
-  //  final MessageHeaderEncoder headerEncoder = state.messageHeaderEncoder;
-  //  final PingPongEncoder pingPongEncoder = state.pingPongEncoder;
-  //  final UnsafeBuffer buffer = state.encodingBuffer;
-  //  final int bufferIndex = state.bufferIndex;
-  //
-  //  encode(headerEncoder, pingPongEncoder, buffer, bufferIndex);
-  //
-  //  return pingPongEncoder.encodedLength();
-  //}
-  //
-  //@Benchmark
-  //public int measureDeserialization(final SBEState state) {
-  //  final MessageHeaderDecoder messageHeaderDecoder = state.messageHeaderDecoder;
-  //  final PingPongDecoder pingPongDecoder = state.pingPongDecoder;
-  //  final UnsafeBuffer buffer = state.decodingBuffer;
-  //  final int bufferIndex = state.bufferIndex;
-  //
-  //  decode(messageHeaderDecoder, pingPongDecoder, buffer, bufferIndex);
-  //
-  //  return pingPongDecoder.encodedLength();
-  //}
+  @Benchmark
+  public int measureSerialization(final SBEState state) {
+    final MessageHeaderEncoder headerEncoder = state.messageHeaderEncoder;
+    final PingPongEncoder pingPongEncoder = state.pingPongEncoder;
+    final UnsafeBuffer buffer = state.encodingBuffer;
+    final int bufferIndex = state.bufferIndex;
+    
+    encode(headerEncoder, pingPongEncoder, buffer, bufferIndex);
+    
+    return pingPongEncoder.encodedLength();
+  }
+  
+  @Benchmark
+  public int measureDeserialization(final SBEState state) {
+    final MessageHeaderDecoder messageHeaderDecoder = state.messageHeaderDecoder;
+    final PingPongDecoder pingPongDecoder = state.pingPongDecoder;
+    final UnsafeBuffer buffer = state.decodingBuffer;
+    final int bufferIndex = state.bufferIndex;
+    
+    decode(messageHeaderDecoder, pingPongDecoder, buffer, bufferIndex);
+    
+    return pingPongDecoder.encodedLength();
+  }
   
   private static void decode(
       final MessageHeaderDecoder messageHeader,
@@ -77,12 +76,12 @@ public class SBEBenchmark {
       final UnsafeBuffer buffer,
       final int bufferIndex) {
     messageHeader.wrap(buffer, bufferIndex);
-  
+    
     final int currentVersion = messageHeader.version();
     final int blockLen = messageHeader.blockLength();
-  
+    
     pingPongDecoder.wrap(buffer, bufferIndex + messageHeader.encodedLength(), blockLen, currentVersion);
-  
+    
     //  So, this is the interesting part, technically, we got the data, SBE is a zero-copy approach
     //  but in order to make it comparable we make an attempt at accessing the data
     //  as it is the actual moment when it gets deserialized
@@ -90,15 +89,15 @@ public class SBEBenchmark {
     pingPongDecoder.version();
     pingPongDecoder.message();
     pingPongDecoder.isImportant();
-  
+    
     for (PingPongDecoder.NamesDecoder nameEntry : pingPongDecoder.names()) {
       nameEntry.name();
     }
-  
+    
     for (PingPongDecoder.IntsDecoder intEntry : pingPongDecoder.ints()) {
       intEntry.record();
     }
-  
+    
     for (PingPongDecoder.DoublesDecoder doubleEntry : pingPongDecoder.doubles()) {
       doubleEntry.record();
     }
@@ -116,10 +115,10 @@ public class SBEBenchmark {
     
     final PingPongEncoder.NamesEncoder namesEncoder = pingPong.namesCount(Data.NAMES.size());
     Data.NAMES.forEach(name -> namesEncoder.next().name(name));
-  
+    
     final PingPongEncoder.IntsEncoder intsEncoder = pingPong.intsCount(Data.INTS.size());
     Data.INTS.forEach(num -> intsEncoder.next().record(num));
-  
+    
     final PingPongEncoder.DoublesEncoder doublesEncoder = pingPong.doublesCount(Data.DOUBLES.size());
     Data.DOUBLES.forEach(num -> doublesEncoder.next().record(num));
   }
